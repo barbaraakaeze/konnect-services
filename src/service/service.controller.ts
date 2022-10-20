@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Req } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Req, Query } from '@nestjs/common';
 import { ServiceService } from './service.service';
 import { CreateServiceDto } from './dto/create-service.dto';
 import { UpdateServiceDto } from './dto/update-service.dto';
@@ -21,6 +21,11 @@ export class ServiceController {
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.serviceService.findOne(id);
+  }
+
+  @Get('/search/:name')
+  async search(@Param('name') name: Request) {
+    return this.serviceService.search(name)
   }
 
   @Patch(':id')

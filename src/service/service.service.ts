@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, SelectQueryBuilder } from 'typeorm';
+import { Repository } from 'typeorm';
 import { CreateServiceDto } from './dto/create-service.dto';
 import { UpdateServiceDto } from './dto/update-service.dto';
 import { Service } from './entities/service.entity';
@@ -17,17 +17,6 @@ export class ServiceService {
   }
 
   async findAll(options?: Request): Promise<Service[]> {
-    // Implementing the search filter
-    // if search params is set, pass to DB
-    //  ILIKE case insensitve for search
-    if(options.query.s) {
-     const result = this.repository.createQueryBuilder("service")
-     .where("service.name ILIKE :name", { name: `%${options.query.s}%` })
-     .orWhere("service.description ILIKE :name", { name: `%${options.query.s}%` })
-     .getMany();
-
-     return result;
-    }
     // SORTING
     // possibly use a PERSSIMISTIC_READ to prevent changes while we are loading data
     if (options.query.sort) {
@@ -40,35 +29,19 @@ export class ServiceService {
 
     // PAGINATION
     if(options.query.page) {
-      const page: number = parseInt(options.query.page as any) || 1;
-      const limit = 12;
-      const result = this.repository.createQueryBuilder("service")
-      .skip((page - 1) * limit)
-      .take(limit)
-      .getMany();
-
+      const result = this.paginate(options);
       return result;
     }
-
-    // Query first page without cursor using a given param
-    const queryBuilder = this.repository.createQueryBuilder("service")
-    .where("service.name ILIKE :name", { name: `%${options.query.s}%` })
-
-    const paginator = buildPaginator({
-      entity: Service,
-      paginationKeys: ['id'],
-      query: {
-        limit: 12,
-        order: 'ASC',
-      },
-    })
-    const { data, cursor } = await paginator.paginate(queryBuilder);
 
     return this.repository.find();
   }
 
-  findOne(id: string): Promise<Service> {
-    return this.repository.findOne(id);
+  async findOne(id: string): Promise<Service> {
+    const result = this.repository.findOne(id);
+    if (!result) {
+      throw new NotFoundException(`Service ${id} cannot be found`);
+    }
+    return result;
   }
 
   async update(id: string, updateServiceDto: UpdateServiceDto): Promise<Service> {
@@ -86,4 +59,87 @@ export class ServiceService {
     const service = await this.findOne(id);
     return this.repository.remove(service);
   }
+
+  private paginate(params) {
+    if(params.query.page) {
+      const page: number = parseInt(params.query.page as any) || 1;
+      const limit = 12;
+      const result = this.repository.createQueryBuilder("service")
+      .skip((page - 1) * limit)
+      .take(limit)
+      .getMany();
+
+      return result;
+    }
+  }
+
+  async search(name: Request): Promise<Service[]> {
+    try {
+      // Implementing the search filter
+      //  ILIKE case insensitve for search
+      if(name) {
+        const result = this.repository.createQueryBuilder("service")
+        .where("service.name ILIKE :name", { name: `%${name}%` })
+        .orWhere("service.description ILIKE :description", { description: `%${name}%` })
+        .getMany();
+
+        return result;
+      }
+      return [];
+    } catch (error) {
+      throw new NotFoundException(error);
+    }
+  }
+
+  // Query first page without cursor using a given param
+  /*async firstPageCursorPagination(options) {
+    const queryBuilder = this.repository.createQueryBuilder("service")
+    .where("service.name ILIKE :name", { name: `%${options.query.s}%` })
+
+    const paginator = buildPaginator({
+      entity: Service,
+      paginationKeys: ['id'],
+      query: {
+        limit: 12,
+        order: 'ASC',
+      },
+    })
+    const { data, cursor } = await paginator.paginate(queryBuilder);
+    return {
+      cursor: cursor,
+      data: data
+    }
+  }
+
+  async nextPagePagination(cursor) {
+    const nextPaginator = buildPaginator({
+      entity: Service,
+      paginationKeys: ['id'],
+      query: {
+        limit: 12,
+        order: 'ASC',
+        afterCursor: cursor.afterCursor,
+      },
+    });
+
+    const { data, cursor } = await nextPaginator.paginate(queryBuilder);
+    return {
+      cursor: cursor,
+      data: data
+    }
+  }
+
+  previousPagePagination(cursor) {
+    const prevPaginator = buildPaginator({
+      entity: Service,
+      paginationKeys: ['id'],
+      query: {
+        limit: 10,
+        order: 'ASC',
+        beforeCursor: cursor.beforeCursor,
+      },
+    });
+
+    const { data, cursor } = await prevPaginator.paginate(queryBuilder);
+  }*/
 }
