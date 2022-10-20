@@ -91,8 +91,15 @@ export class ServiceService {
     }
   }
 
+  async findServiceVersions(id?: any): Promise<number> {
+    console.log(`called`);
+    const result = (await this.repository.createQueryBuilder("service") .where("service.id = :id", { id: id }).getOne()).versions;
+    console.log(`Version Nmber:`, result);
+    return result;
+  }
+
   // Query first page without cursor using a given param
-  /*async firstPageCursorPagination(options) {
+  /*async firstPageCursorPagination() {
     const queryBuilder = this.repository.createQueryBuilder("service")
     .where("service.name ILIKE :name", { name: `%${options.query.s}%` })
 

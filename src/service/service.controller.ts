@@ -23,6 +23,11 @@ export class ServiceController {
     return this.serviceService.findOne(id);
   }
 
+  @Get('/versions/:id')
+  findServiceVersions(@Param('id') id: string) {
+    return this.serviceService.findOne(id);
+  }
+
   @Get('/search/:name')
   async search(@Param('name') name: Request) {
     return this.serviceService.search(name)

@@ -1,9 +1,14 @@
-import { BaseEntity, Column, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { BaseEntity, Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn, VersionColumn } from "typeorm";
+import { VersionedEntity } from "typeorm-versions";
 
 @Entity()
+@VersionedEntity()
 export class Service extends BaseEntity {
  @PrimaryGeneratedColumn('uuid')
  id: string;
+
+ @CreateDateColumn({ name: 'created_at', type: 'timestamptz', default: () => 'CURRENT_TIMESTAMP' })
+createdAt: Date;
 
  @UpdateDateColumn({ name: 'updated_at', type: 'timestamptz', default: () => 'CURRENT_TIMESTAMP' })
  updatedAt: Date;
@@ -14,6 +19,6 @@ export class Service extends BaseEntity {
  @Column({ name: 'description', type: 'varchar', nullable: true, length: 255 })
  description?: string;
 
- @Column({ name: 'versions', type: 'int' })
+ @VersionColumn({ name: 'versions', type: 'int' })
  versions: number;
 }

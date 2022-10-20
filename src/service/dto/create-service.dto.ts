@@ -9,8 +9,4 @@ export class CreateServiceDto {
     @IsOptional()
     @IsString()
     description: string
-
-    @IsInt()
-    @Min(1) //possibly update this to 1
-    versions: number;
 }
