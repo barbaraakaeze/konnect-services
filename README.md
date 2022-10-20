@@ -1,73 +1,47 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
+This program allows a user to see an overview of services in an organization. The user can:
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+1. See the name, a brief description, and versions available for a given service
+2. Navigate to a given service using the ID
+3. Search for a specific service using the service name
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+# Quick STEPS
 
-## Description
+- Start services `docker compose up`
+- Seed the database `./scripts/seed_test_data.sh`
+- From a terminal run `npm run start:dev`
+- When testing is complete, stop running DB `docker compose down`
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+# Query Services
+## Get all services
+From Postman make a GET request to `http://localhost:3000/api/service`
+## Get a service
+From Postman make a GET request to `http://localhost:3000/api/service/:id`
+## Fetch a service versions
+From Postman make a GET request to `http://localhost:3000/api/service/versions/:id` the id will be the id of the service which versions you would like to see.
+## Search a service
+From Postman make a GET request to `http://localhost:3000/api/service/search/:name` the name will be the name of the specific service being searched.
 
-## Installation
+# CRUD functionalities
+Create GET request to `http://localhost:3000/api/service/:id`
+Read GET request to `http://localhost:3000/api/service`
+Update PATCH request to `http://localhost:3000/api/service/:id`
+Delete DELETE request to `http://localhost:3000/api/service/:id`
 
-```bash
-$ npm install
-```
+## Debugging DB issues
+- Start services `docker compose up`
+- Start migration `./scripts/seed_test_data.sh`
+- View data in db `docker exec -it ${CONTAINER_ID} psql -U konnectservices`
+- List databases ` \l`
+- List tables `\dt`
+- Stop running DB `docker compose down`
 
-## Running the app
+# Considerations
+With more time, I would have:
 
-```bash
-# development
-$ npm run start
+*Database:* Index the ID column for faster searches
 
-# watch mode
-$ npm run start:dev
+*Pagination:* Implemented cursor based pagination using the [typeorm-cursor-pagination](https://www.npmjs.com/package/typeorm-cursor-pagination/v/0.6.1)
 
-# production mode
-$ npm run start:prod
-```
+*Unit Tests*: Added some unit test to test the core requirements. Some edge case tests to ensure we capture corner cases and error handling.
 
-## Test
 
-```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
-```
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](LICENSE).

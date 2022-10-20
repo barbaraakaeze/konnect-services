@@ -34,7 +34,8 @@
     "rimraf": "^3.0.2",
     "rxjs": "^7.2.0",
     "typeorm": "^0.2.45",
-    "typeorm-cursor-pagination": "^0.9.1"
+    "typeorm-cursor-pagination": "^0.9.1",
+    "typeorm-versions": "^0.4.0"
   },
   "devDependencies": {
     "@nestjs/cli": "^6.14.2",
