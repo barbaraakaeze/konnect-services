@@ -3,7 +3,7 @@ import { VersionedEntity } from "typeorm-versions";
 
 @Entity()
 @VersionedEntity()
-export class Service extends BaseEntity {
+export class Services extends BaseEntity {
  @PrimaryGeneratedColumn('uuid')
  id: string;
 
@@ -13,7 +13,7 @@ createdAt: Date;
  @UpdateDateColumn({ name: 'updated_at', type: 'timestamptz', default: () => 'CURRENT_TIMESTAMP' })
  updatedAt: Date;
 
- @Column({ name: 'name', type: 'varchar', length: 50 })
+ @Column({ name: 'name', type: 'varchar' })
  name: string;
 
  @Column({ name: 'description', type: 'varchar', nullable: true, length: 255 })

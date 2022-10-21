@@ -3,20 +3,19 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateServiceDto } from './dto/create-service.dto';
 import { UpdateServiceDto } from './dto/update-service.dto';
-import { Service } from './entities/service.entity';
+import { Services } from './entities/service.entity';
 import { Request } from 'express';
-import { buildPaginator } from 'typeorm-cursor-pagination';
 
 @Injectable()
-export class ServiceService {
-  constructor(@InjectRepository(Service) private readonly repository: Repository<Service>) { }
+export class ServicesService {
+  constructor(@InjectRepository(Services) private readonly repository: Repository<Services>) { }
 
-  create(createServiceDto: CreateServiceDto): Promise<Service> {
+  create(createServiceDto: CreateServiceDto): Promise<Services> {
     const service = this.repository.create(createServiceDto);
     return this.repository.save(service);
   }
 
-  async findAll(options?: Request): Promise<Service[]> {
+  async findAll(options?: Request): Promise<Services[]> {
     // SORTING
     // possibly use a PERSSIMISTIC_READ to prevent changes while we are loading data
     if (options.query.sort) {
@@ -36,7 +35,7 @@ export class ServiceService {
     return this.repository.find();
   }
 
-  async findOne(id: string): Promise<Service> {
+  async findOne(id: string): Promise<Services> {
     const result = this.repository.findOne(id);
     if (!result) {
       throw new NotFoundException(`Service ${id} cannot be found`);
@@ -44,7 +43,7 @@ export class ServiceService {
     return result;
   }
 
-  async update(id: string, updateServiceDto: UpdateServiceDto): Promise<Service> {
+  async update(id: string, updateServiceDto: UpdateServiceDto): Promise<Services> {
     const service = await this.repository.preload({
       id: id,
       ...updateServiceDto,
@@ -73,10 +72,9 @@ export class ServiceService {
     }
   }
 
-  async search(name: Request): Promise<Service[]> {
+  async search(name: Request): Promise<Services[]> {
     try {
       // Implementing the search filter
-      //  ILIKE case insensitve for search
       if(name) {
         const result = this.repository.createQueryBuilder("service")
         .where("service.name ILIKE :name", { name: `%${name}%` })
@@ -97,56 +95,4 @@ export class ServiceService {
     console.log(`Version Nmber:`, result);
     return result;
   }
-
-  // Query first page without cursor using a given param
-  /*async firstPageCursorPagination() {
-    const queryBuilder = this.repository.createQueryBuilder("service")
-    .where("service.name ILIKE :name", { name: `%${options.query.s}%` })
-
-    const paginator = buildPaginator({
-      entity: Service,
-      paginationKeys: ['id'],
-      query: {
-        limit: 12,
-        order: 'ASC',
-      },
-    })
-    const { data, cursor } = await paginator.paginate(queryBuilder);
-    return {
-      cursor: cursor,
-      data: data
-    }
-  }
-
-  async nextPagePagination(cursor) {
-    const nextPaginator = buildPaginator({
-      entity: Service,
-      paginationKeys: ['id'],
-      query: {
-        limit: 12,
-        order: 'ASC',
-        afterCursor: cursor.afterCursor,
-      },
-    });
-
-    const { data, cursor } = await nextPaginator.paginate(queryBuilder);
-    return {
-      cursor: cursor,
-      data: data
-    }
-  }
-
-  previousPagePagination(cursor) {
-    const prevPaginator = buildPaginator({
-      entity: Service,
-      paginationKeys: ['id'],
-      query: {
-        limit: 10,
-        order: 'ASC',
-        beforeCursor: cursor.beforeCursor,
-      },
-    });
-
-    const { data, cursor } = await prevPaginator.paginate(queryBuilder);
-  }*/
 }
