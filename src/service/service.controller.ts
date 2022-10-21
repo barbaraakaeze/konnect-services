@@ -4,7 +4,7 @@ import { CreateServiceDto } from './dto/create-service.dto';
 import { UpdateServiceDto } from './dto/update-service.dto';
 import { Request } from 'express';
 
-@Controller('api/service')
+@Controller('api/services')
 export class ServicesController {
   constructor(private readonly serviceService: ServicesService) {}
 
