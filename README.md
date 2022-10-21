@@ -51,11 +51,7 @@ Delete: DELETE request to `http://localhost:3000/api/services/:id`
 - Stop running DB `docker compose down`
 
 # Test Plan:
-[Test Plan 01](https://github.com/barbaraakaeze/konnect-services/blob/main/test/Test%20Plan-images/0001.jpg)
-
-[Test Plan 02](https://github.com/barbaraakaeze/konnect-services/blob/main/test/Test%20Plan-images/0002.jpg)
-
-[Test Plan 03](https://github.com/barbaraakaeze/konnect-services/blob/main/test/Test%20Plan-images/0003.jpg)
+[Test Plan Markdown](https://github.com/barbaraakaeze/konnect-services/blob/main/TESTPLAN.md)
 
 
 # Considerations and Assumptions
